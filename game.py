@@ -14,7 +14,8 @@ screen._root.attributes("-fullscreen", True)
 
 weights1 = [0.01, 0.09, 0.90]
 weights2 = [0.01, 0.09, 0.90]
-scorers = []
+scorers1 = []
+scorers2 = []
 Goals1 = []
 Goals2 = []
 goals = []
@@ -51,7 +52,7 @@ def simulate_match_with_events(team1, team2, rank1, rank2, chance_of_goal1, chan
     t.goto(-150, 200)
     t3.hideturtle()
     t3.penup()
-    t3.goto(-200, 200)
+    t3.goto(-250, 200)
     t2.hideturtle()
     t2.penup()
 
@@ -62,10 +63,10 @@ def simulate_match_with_events(team1, team2, rank1, rank2, chance_of_goal1, chan
 
     for minute in range(1, 91):
 
-        time.sleep(1)
+        time.sleep(0.1)
         t3.clear()
         event = random.random()
-        t3.write(minute, font=('Arial', 40, 'bold'))
+        t3.write(f'{minute}' "", font=('Arial', 40, 'bold'))
         if event < prob1 * chance_of_goal1:
             goals1 += 1
             t.clear()
@@ -73,7 +74,7 @@ def simulate_match_with_events(team1, team2, rank1, rank2, chance_of_goal1, chan
             goals.append(minute)
             teams.append(team1)
             player = random.choices(team1players, weights=weights1, k=1)[0]
-            scorers.append(player)
+            scorers1.append(player)
             t2.penup()
             t2.goto(-150, y)
             t2.write(f'{minute} min – Goal for {team1}! Scored by {player}', font=('Arial', 10, 'bold'))
@@ -88,7 +89,7 @@ def simulate_match_with_events(team1, team2, rank1, rank2, chance_of_goal1, chan
             goals.append(minute)
             teams.append(team2)
             player2 = random.choices(team2players, weights=weights2, k=1)[0]
-            scorers.append(player2)
+            scorers2.append(player2)
             t2.penup()
             t2.goto(-150, y)
             t2.write(f'{minute} min – Goal for {team2}! Scored by {player2}', font=('Arial', 10, 'bold'))
@@ -102,20 +103,40 @@ def simulate_match_with_events(team1, team2, rank1, rank2, chance_of_goal1, chan
     print(f"Final Score: {team1} {goals1} : {goals2} {team2}")
     Goals1.append(goals1)
     Goals2.append(goals2)
-    top_scorer_counter = Counter(scorers)
-    top_scorer, count = top_scorer_counter.most_common(1)[0]
-    t2.goto(-150, y - 25)
-    t2.write(f'Top scorer: {top_scorer} with {count} goals!', font=('Arial', 10, 'bold'))
-    time.sleep(10)
-    scorers.clear()
-    t.clear()
-    t2.clear()
+    counter1 = Counter(scorers1)
+    counter2 = Counter(scorers2)
+    top_scorer1, count1 = counter1.most_common(1)[0]
+    top_scorer2, count2 = counter2.most_common(1)[0]
+
+
+
+    if count1 >= count2:
+        t2.goto(-150, y - 25)
+        t2.write(f'Top scorer: {top_scorer1} with {count1} goals!', font=('Arial', 10, 'bold'))
+        y -=25
+    elif count1 <= count2:
+        t2.goto(-150, y - 25)
+        t2.write(f'Top scorer: {top_scorer2} with {count2} goals!', font=('Arial', 10, 'bold'))
+        y-=25
     if goals1 > goals2:
         print(f"Winner: {team1}")
+        t2.goto(-150, y-25)
+        t2.write(f'Winner: {team1}', font=('Arial', 15, 'bold'))
     elif goals2 > goals1:
         print(f"Winner: {team2}")
+        t2.goto(-150, y-25)
+        t2.write(f'Winner: {team2}', font=('Arial', 15, 'bold'))
     else:
         print("Draw")
+        t2.goto(-150, y-25)
+        t2.write(f'Draw', font=('Arial', 15, 'bold'))
+    time.sleep(10)
+    scorers1.clear()
+    scorers2.clear()
+    t.clear()
+    t2.clear()
+    t3.clear()
+
 
 # Example usage
 team1 = input("Enter the name of the first team: ")
@@ -126,6 +147,6 @@ chance_of_goal1 = float(input('Enter the goal chance for the first team (e.g., 0
 chance_of_goal2 = float(input('Enter the goal chance for the second team (e.g., 0.03): '))
 
 simulate_match_with_events(team1, team2, rank1, rank2, chance_of_goal1, chance_of_goal2)
-screen.onkey(simulate_match_with_events(team1, team2, rank1, rank2, chance_of_goal1, chance_of_goal2), 'space')
-screen.listen()
+#screen.onkey(simulate_match_with_events(team1, team2, rank1, rank2, chance_of_goal1, chance_of_goal2), 'space')
+#screen.listen()
 turtle.exitonclick()
